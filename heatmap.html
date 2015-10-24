@@ -35,16 +35,15 @@
         </div>
     </div>
     <div style="margin-top: 7em; padding-bottom: 7em;" class="ui main text container">
-        <h1>即時熱圖</h1>
-        <div id="map" style="width: 90%; height: 300px"></div>
+
         <h1>本月全部消費熱點</h1>
         <div id="map2" style="width: 90%; height: 300px"></div>
+        <h1>即時熱圖</h1>
+        <div id="map" style="width: 90%; height: 300px"></div>
     </div>
     <script>
         var data = []
-        var data2 = [
-            {"lat":25.0424290739363,"lng":121.63204193115234},
-        ]
+        var data2 = []
         colors = ['#0092C7',
             '#9FE0F6',
             '#F3E59A',
@@ -91,7 +90,7 @@
             },
             mousemove: function(e) {
                 if (draw) {
-                    heat2.addLatLng(e.latlng);
+                    // heat2.addLatLng(e.latlng);
                 }
             }
         })
@@ -124,7 +123,13 @@
             // console.log([getRamdomPoint()['lat'], getRamdomPoint()['lng']]);
         }
         setInterval("createHeatPoint(getRandomInt(0,30))", 100);
+        $.get("https://raw.githubusercontent.com/kevchentw/VizMap/master/data", function(res) {
+            data = JSON.parse(res);
+            for (var i = 0; i < data.length; i++) {
+                heat2.addLatLng(L.latLng(data[i][0], data[i][1]));
+            }
 
+        });
         // setInterval("heat.addLatLng(createHeatPoint())", 100);
     </script>
 </body>
