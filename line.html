@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Map Playground</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css" />
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
+</head>
+
+<body>
+	<div style="margin: auto;padding: 1em;font-size: 108%" class="ui fixed teal borderless inverted menu">
+		<div class="ui container">
+			<div href="" class="item">
+				玉山銀行
+			</div>
+			<a href="index.html" class="item">即時交易地圖</a>
+            <a href="heatmap.html" class="item">熱圖</a>
+            <a href="area.html" class="item">區域分析</a>
+			<div class="right menu">
+				<a href="" class="item"></a>
+			</div>
+		</div>
+	</div>
+	<div style="margin-top: 7em; padding-bottom: 7em; margin-left:10px; margin-right:10px" class="ui main text container">
+        <div class="ui grid">
+            <div class="sixteen wide column">
+		        <h1>&nbsp;過往交易分析</h1>
+                <div id='chart'></div>
+                <script>
+                var chart = c3.generate({
+                    data: {
+                        columns: [
+                            ['食', 30123, 20210, 21100, 34400, 31150, 45250],
+                            ['衣', 345130, 334340, 23400, 32500, 134250, 23350],
+                            ['住', 12430, 342230, 89200, 51200, 24250, 32450],
+                            ['行', 4130, 36470, 45200, 502230, 22450, 32350],
+                            ['育', 41230, 36640, 20890, 50230, 232250, 33250],
+                            ['樂', 15330, 3460, 23200, 52200, 12650, 123350],
+                        ],
+                        type: 'bar',
+                        groups: [
+                            ['食', '衣', '住', '行', '育', '樂']
+                        ]
+                    },
+                        bar: {
+                            width: {
+                                ratio: 0.5
+                            }
+                        }
+                });
+                </script>
+            </div>
+        </div>
+
+</body>
+</html>
