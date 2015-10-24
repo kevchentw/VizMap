@@ -16,44 +16,35 @@
 <body>
 	<div style="margin: auto;padding: 1em;font-size: 108%" class="ui fixed teal borderless inverted menu">
 		<div class="ui container">
-			<div href="#" class="item">
+			<div href="" class="item">
 				玉山銀行
 			</div>
-			<a href="index.html" class="item">首頁</a>
+			<a href="index.html" class="item">即時交易地圖</a>
             <a href="heatmap.html" class="item">熱圖</a>
             <a href="area.html" class="item">區域分析</a>
 			<div class="right menu">
-				<a href="#" class="item">test</a>
+				<a href="" class="item"></a>
 			</div>
 		</div>
 	</div>
 	<div style="margin-top: 7em; padding-bottom: 7em; margin-left:10px; margin-right:10px" class="ui main text container">
-		<h1>即時交易地圖</h1>
         <div class="ui grid">
             <div class="ten wide column">
+		        <h1>&nbsp;即時交易地圖</h1>
 		        <div id="map" style="width: 100%; height: 500px"></div>
 		        <div class="ui celled list" id="info_list"></div>
             </div>
             <div class="six wide column">
+		        <h1>&nbsp;近一個小時交易量</h1>
                 <canvas id="radar" width="400px" height="400px"></canvas>
             </div>
         </div>
 		<script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
 		<script>
-		var v = new Array(100,0,0,0,0,0);
+		var v = new Array(30043,22050,31340,25340,23450,47650);
 
             productTypes = ['食','衣','住','行','育','樂'];
-			colors = ['#0092C7',
-				'#9FE0F6',
-				'#F3E59A',
-				'#F3B59B',
-				'#F29C9C',
-				'#7BA3A8',
-				'#F4F3DE',
-				'#BEAD92',
-				'#F35A4A'
-			];
-
+			colors = ['#0092C7','#9FE0F6','#F3E59A','#F3B59B','#F29C9C','#7BA3A8','#F4F3DE','#BEAD92','#F35A4A'];
 			circles = [];
 			var map = L.map('map').setView([25.046074, 121.5494119], 15);
 
@@ -174,22 +165,26 @@
             },
             {
                 value: v[4],
-                color: "#4D5360",
-                highlight: "#616774",
+                color: "#F4F3DE",
+                highlight: "#116774",
                 label: "育"
             },
             {
                 value: v[5],
                 color: "#0092C7",
-                highlight: "#616774",
+                highlight: "#613274",
                 label: "樂"
             }
         ];
         var ctx = document.getElementById("radar").getContext("2d");
-        var myradar = new Chart(ctx).PolarArea(data, {});
-
-
-
+        var myradar = new Chart(ctx).PolarArea(data, {
+            tooltipTemplate: "<%= value %>",
+            onAnimationComplete: function(){
+                this.showTooltip(this.segments, true);
+            },
+            tooltipEvents: [],
+            showTooltips: true
+        });
 		</script>
 </body>
 
