@@ -1,6 +1,5 @@
 import json
-f = open("heat_data.json", 'r')
-w = open("heat_data_parsed_json", 'w')
+f = open("heat_data2.json", 'r')
 #print(f.read())
 j = json.loads(f.read())
 #print(len(j))
