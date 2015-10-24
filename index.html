@@ -4,16 +4,14 @@
 <head>
 	<title>Map Playground</title>
 	<meta charset="utf-8" />
-
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css" />
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
 </head>
-
-
 
 <body>
 	<div style="margin: auto;padding: 1em;font-size: 108%" class="ui fixed teal borderless inverted menu">
@@ -29,20 +27,22 @@
 			</div>
 		</div>
 	</div>
-	<div style="margin-top: 7em; padding-bottom: 7em;" class="ui main text container">
+	<div style="margin-top: 7em; padding-bottom: 7em; margin-left:10px; margin-right:10px" class="ui main text container">
 		<h1>即時交易地圖</h1>
-		<div id="map" style="width: 100%; height: 300px"></div>
-		<div class="ui celled list" id="info_list">
-		</div>
+        <div class="ui grid">
+            <div class="ten wide column">
+		        <div id="map" style="width: 100%; height: 500px"></div>
+		        <div class="ui celled list" id="info_list"></div>
+            </div>
+            <div class="six wide column">
+                <canvas id="radar" width="400px" height="400px"></canvas>
+            </div>
+        </div>
 		<script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
 		<script>
-			productTypes = ['食',
-				'衣',
-				'住',
-				'行',
-				'育',
-				'樂'
-			];
+		var v = new Array(100,0,0,0,0,0);
+
+            productTypes = ['食','衣','住','行','育','樂'];
 			colors = ['#0092C7',
 				'#9FE0F6',
 				'#F3E59A',
@@ -131,7 +131,10 @@
 				var data = "類別:" + productTypes[type] + "\n" + "金額:" + money + "\n" + "帳號:" + account;
 				var p = getRamdomPoint();
 				var c = createCircle(p, colors[type], data);
+                v[type] = v[type] + money;
 				addPaymentItem(productTypes[type], money, account, now);
+                myradar.segments[type].value = v[type];
+                myradar.update();
 			}
 
 			function fakeLivePaymentAnimate() {
@@ -141,6 +144,52 @@
 			}
 			setInterval("fakeLivePayment()", 500);
 			setInterval("fakeLivePaymentAnimate()", 10);
+        
+        
+
+        var data = [
+            {
+                value: v[0],
+                color:"#F7464A",
+                highlight: "#FF5A5E",
+                label: "食"
+            },
+            {
+                value: v[1],
+                color: "#46BFBD",
+                highlight: "#5AD3D1",
+                label: "衣"
+            },
+            {
+                value: v[2],
+                color: "#FDB45C",
+                highlight: "#FFC870",
+                label: "住"
+            },
+            {
+                value: v[3],
+                color: "#949FB1",
+                highlight: "#A8B3C5",
+                label: "行"
+            },
+            {
+                value: v[4],
+                color: "#4D5360",
+                highlight: "#616774",
+                label: "育"
+            },
+            {
+                value: v[5],
+                color: "#0092C7",
+                highlight: "#616774",
+                label: "樂"
+            }
+        ];
+        var ctx = document.getElementById("radar").getContext("2d");
+        var myradar = new Chart(ctx).PolarArea(data, {});
+
+
+
 		</script>
 </body>
 
