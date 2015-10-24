@@ -14,19 +14,21 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
     <script src="https://rawgit.com/calvinmetcalf/leaflet-ajax/gh-pages/dist/leaflet.ajax.min.js"></script>
     <style>
-    .info {
-        padding: 6px 8px;
-        font: 14px/16px Arial, Helvetica, sans-serif;
-        background: white;
-        background: rgba(255, 255, 255, 0.8);
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-        border-radius: 5px;
-    }
+        .info {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
 
-    .info h4 {
-        margin: 0 0 5px;
-        color: #777;
-    }
+        }
+
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+
         .legend {
             line-height: 18px;
             color: #555;
@@ -39,8 +41,6 @@
             margin-right: 8px;
             opacity: 0.7;
         }
-
-
     </style>
 </head>
 
@@ -61,12 +61,22 @@
         </div>
     </div>
     <div style="margin-top: 7em; padding-bottom: 7em;" class="ui main text container">
-        <h1>即時交易地圖</h1>
-        <div id="map" style="width: 100%; height: 300px"></div>
-        <div class="ui celled list" id="info_list">
+        <h1>台北市地區平均消費地圖</h1>
+        <div id="map" style="width: 100%; height: 300px; "></div>
+            <div style="margin: 1em; float: right" class="ui selection dropdown">
+                <input type="hidden" name="month" id="month">
+                <i class="dropdown icon"></i>
+                <div class="default text">月份</div>
+                <div class="menu">
+                    <div class="item" data-value="201509">2015九月</div>
+                    <div class="item" data-value="201508">2015八月</div>
+                    <div class="item" data-value="201507">2015七月</div>
+                </div>
         </div>
         <script>
             var geojson;
+            var now_month = "201509";
+            var now_month_zh = "2015九月";
             colors = ['#0092C7',
                 '#9FE0F6',
                 '#F3E59A',
@@ -108,8 +118,21 @@
             }
 
             function style(feature) {
+                var avg;
+                if(now_month=="201509"){
+                    avg=feature.properties.avg9;
+                    now_month_zh = "2015九月";
+                }
+                else if(now_month=="201508"){
+                    avg=feature.properties.avg8;
+                    now_month_zh = "2015八月";
+                }
+                else if(now_month=="201507"){
+                    avg=feature.properties.avg7;
+                    now_month_zh = "2015七月";
+                }
                 return {
-                    fillColor: getColor(feature.properties.avg),
+                    fillColor: getColor(avg),
                     weight: 2,
                     opacity: 1,
                     color: 'white',
@@ -120,7 +143,6 @@
 
             function highlightFeature(e) {
                 var layer = e.target;
-
                 layer.setStyle({
                     weight: 5,
                     color: '#666',
@@ -132,7 +154,6 @@
                     layer.bringToFront();
                 }
                 info.update(layer.feature.properties);
-
             }
 
             function resetHighlight(e) {
@@ -174,9 +195,8 @@
 
             // method that we will use to update the control based on feature properties passed
             info.update = function(props) {
-                console.log(props);
-                this._div.innerHTML = '<h4>台北市九月平均消費</h4>' + (props ?
-                    '<b>' + props.TNAME + '</b><br />$' + props.avg + ' 台幣 / 每筆交易' : '請選取一個區域');
+                this._div.innerHTML = '<h4>台北市' + now_month_zh +'平均消費</h4>' + (props ?
+                    '<b>' + props.TNAME + '</b><br />$' + props.avg9 + ' 台幣 / 每筆交易' : '請選取一個區域');
             };
 
             info.addTo(map);
@@ -203,13 +223,21 @@
 
             legend.addTo(map);
 
-            $.get("https://gist.githubusercontent.com/anonymous/e3c6d71a30532f776d0f/raw/58931b985268b6931efb3285379712b0b75565fa/map.geojson", function(res) {
+            $.get("https://gist.githubusercontent.com/anonymous/c2dd80e6230134529a20/raw/51922a555b6d5189d8a05dcb778e330aee2445dc/map.geojson", function(res) {
                 data = JSON.parse(res);
                 geojson = L.geoJson(data, {
                     style: style,
                     onEachFeature: onEachFeature
                 }).addTo(map);
             });
+            $("#month").change(function(){
+                now_month = this.value;
+                geojson.setStyle(style);
+                info.update();
+            })
+        </script>
+        <script>
+            $('.dropdown').dropdown();
         </script>
 </body>
 
