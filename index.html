@@ -135,8 +135,8 @@
 			}
 			setInterval("fakeLivePayment()", 500);
 			setInterval("fakeLivePaymentAnimate()", 10);
-        
-        
+
+
 
         var data = [
             {
@@ -178,8 +178,8 @@
         ];
         var ctx = document.getElementById("radar").getContext("2d");
         var myradar = new Chart(ctx).PolarArea(data, {
-            tooltipTemplate: "<%= value %>",
-            onAnimationComplete: function(){
+            tooltipTemplate: "<%= label %>: <%= value %>",
+            onAnimationProgress: function(){
                 this.showTooltip(this.segments, true);
             },
             tooltipEvents: [],
