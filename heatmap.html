@@ -132,17 +132,22 @@
         function createHeatPoint(weight) {
             var p = getRamdomPoint();
             for (var i = 0; i < weight; i++) {
-                heat.addLatLng(p);
+                // heat.addLatLng(p);
             }
             // console.log([getRamdomPoint()['lat'], getRamdomPoint()['lng']]);
         }
         setInterval("createHeatPoint(getRandomInt(0,30))", 100);
         $.get("https://raw.githubusercontent.com/kevchentw/VizMap/master/data", function(res) {
-            data = JSON.parse(res);
+            var data = JSON.parse(res);
             for (var i = 0; i < data.length; i++) {
                 heat2.addLatLng(L.latLng(data[i][0], data[i][1]));
             }
-
+        });
+        $.get("https://raw.githubusercontent.com/kevchentw/VizMap/master/data2", function(res) {
+            var data = JSON.parse(res);
+            for (var i = 0; i < data.length; i++) {
+                heat3.addLatLng(L.latLng(data[i][0], data[i][1]));
+            }
         });
         // setInterval("heat.addLatLng(createHeatPoint())", 100);
     </script>
