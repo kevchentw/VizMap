@@ -103,7 +103,7 @@
             },
             mousemove: function(e) {
                 if (draw) {
-                    heat3.addLatLng(e.latlng);
+                    //heat3.addLatLng(e.latlng);
                 }
             }
         })
@@ -114,12 +114,22 @@
             var right = bound['_northEast']['lng'];
             var down = bound['_southWest']['lat'];
             var left = bound['_southWest']['lng'];
-            var lng = getRandomArbitrary(left, right);
-            var lat = getRandomArbitrary(down, up);
+            var lng = getRandomArbitrary(121.510039, 121.571637);
+            var lat = getRandomArbitrary(25.032964, 25.064452);
             var latlng = L.latLng(lat, lng);
             return latlng;
         }
-
+        function getRamdomPointFocus() {
+            var bound = map.getBounds();
+            var up = bound['_northEast']['lat'];
+            var right = bound['_northEast']['lng'];
+            var down = bound['_southWest']['lat'];
+            var left = bound['_southWest']['lng'];
+            var lng = getRandomArbitrary(121.456107, 121.565948);
+            var lat = getRandomArbitrary(25.023642, 25.080333);
+            var latlng = L.latLng(lat, lng);
+            return latlng;
+        }
         function getRandomArbitrary(min, max) {
             return Math.random() * (max - min) + min;
         }
@@ -130,12 +140,16 @@
 
         function createHeatPoint(weight) {
             var p = getRamdomPoint();
+            var p2 = getRamdomPointFocus();
             for (var i = 0; i < weight; i++) {
-                // heat.addLatLng(p);
+                heat.addLatLng(p);
+                if(i%2==0){
+                    heat.addLatLng(p2);
+                }
             }
             // console.log([getRamdomPoint()['lat'], getRamdomPoint()['lng']]);
         }
-        setInterval("createHeatPoint(getRandomInt(0,30))", 100);
+        setInterval("createHeatPoint(getRandomInt(0,30))", 500);
         $.get("https://raw.githubusercontent.com/kevchentw/VizMap/master/data", function(res) {
             var data = JSON.parse(res);
             for (var i = 0; i < data.length; i++) {
