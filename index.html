@@ -89,8 +89,8 @@
 				var right = bound['_northEast']['lng'];
 				var down = bound['_southWest']['lat'];
 				var left = bound['_southWest']['lng'];
-				var lng = getRandomArbitrary(left, right);
-				var lat = getRandomArbitrary(down, up);
+				var lng = getRandomArbitrary(121.456107, 121.571637);
+	            var lat = getRandomArbitrary(25.023642, 25.080333);
 				var latlng = L.latLng(lat, lng);
 				return latlng;
 			}

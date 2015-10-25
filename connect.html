@@ -9,7 +9,10 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+	<script src="https://rawgit.com/joewalnes/reconnecting-websocket/master/reconnecting-websocket.min.js"></script>
+
+	</script>
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
 </head>
 
@@ -19,33 +22,29 @@
 			<a href="connect.html" class="item">玉山銀行</a>
 			<a href="index.html" class="item">即時交易地圖</a>
 			<a href="line.html" class="item">過往交易分析</a>
-            <a href="heatmap.html" class="item">熱圖</a>
-            <a href="area.html" class="item">區域分析</a>
+			<a href="heatmap.html" class="item">熱圖</a>
+			<a href="area.html" class="item">區域分析</a>
 			<div class="right menu">
 				<a href="" class="item"></a>
 			</div>
 		</div>
 	</div>
 	<div style="margin-top: 7em; padding-bottom: 7em; margin-left:10px; margin-right:10px" class="ui main text container">
-        <div class="ui grid">
-            <div class="ten wide column">
-		        <h1>&nbsp;即時交易地圖</h1>
-		        <div id="map" style="width: 100%; height: 500px"></div>
-		        <div class="ui celled list" id="info_list"></div>
-            </div>
-            <div class="six wide column">
-		        <h1>&nbsp;近一個小時交易量</h1>
-                <canvas id="radar" width="400px" height="400px"></canvas>
-            </div>
-        </div>
+		<div class="ui grid">
+			<div class="sixteen wide column">
+				<h1>&nbsp;即時交易地圖</h1>
+				<div id="map" style="width: 90%; height: 500px"></div>
+				<div class="ui celled list" id="info_list"></div>
+			</div>
+		</div>
 		<script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
 		<script>
-		var v = new Array(0,0,0,0,0,0);
+			var v = new Array(0, 0, 0, 0, 0, 0);
 
-            productTypes = ['食','衣','住','行','育','樂'];
-			colors = ['#0092C7','#9FE0F6','#F3E59A','#F3B59B','#F29C9C','#7BA3A8','#F4F3DE','#BEAD92','#F35A4A'];
+			productTypes = ['食', '衣', '住', '行', '育', '樂'];
+			colors = ['#0092C7', '#9FE0F6', '#F3E59A', '#F3B59B', '#F29C9C', '#7BA3A8', '#F4F3DE', '#BEAD92', '#F35A4A'];
 			circles = [];
-			var map = L.map('map').setView([24.787045, 120.996726], 18);
+			var map = L.map('map').setView([24.787045, 120.996726], 16);
 
 			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoia2V2Y2hlbnR3IiwiYSI6ImNpZzRrNnJjajJ2bml1a201ZTgxYnByYXkifQ.6Aj4446JZbArro776O5y9A', {
 				maxZoom: 20,
@@ -74,7 +73,7 @@
 			}
 
 			function createCircle(latlng, color, data) {
-				var c = L.circle(latlng, 80, {
+				var c = L.circle(latlng, 20, {
 					'color': color,
 					'fillOpacity': 1,
 				}).addTo(map);
@@ -94,24 +93,28 @@
 				var latlng = L.latLng(lat, lng);
 				return latlng;
 			}
-			function addPaymentItem(type, money, account, now) {
+
+			function addPaymentItem(username, type, money, account, now) {
 				item = '<div class="item"> \
 					<div class="right floated content">\
-					<div class="ui green label"><i class="circle notched icon"></i>'+ type +'</div>\
-					<div class="ui blue label"><i class="clock icon"></i>'+ now +'</div>\
+					<div class="ui orange label"><i class="user icon"></i>' + username + '</div>\
+					<div class="ui green label"><i class="circle notched icon"></i>' + type + '</div>\
+					<div class="ui blue label"><i class="clock icon"></i>' + now +
+					'</div>\
     				</div>\
 					<i class="arrow right icon"></i>\
 					<div class="content">\
-					<div class="ui red label"><i class="money icon"></i>'+ money +'</div>\
+					<div class="ui red label"><i class="money icon"></i>' + money + '</div>\
 					</div>\
 				</div>';
 				$("#info_list").prepend(item);
-				if($("#info_list").children().length>30){
+				if ($("#info_list").children().length > 30) {
 					for (var i = 31; i < $("#info_list").children().length; i++) {
 						$("#info_list").children()[i].remove()
 					}
 				}
 			}
+
 			function fakeLivePayment() {
 				var type = getRandomInt(0, productTypes.length);
 				var money = getRandomInt(100, 5000);
@@ -121,10 +124,10 @@
 				var data = "類別:" + productTypes[type] + "\n" + "金額:" + money + "\n" + "帳號:" + account;
 				var p = getRamdomPoint();
 				var c = createCircle(p, colors[type], data);
-                v[type] = v[type] + money;
+				v[type] = v[type] + money;
 				addPaymentItem(productTypes[type], money, account, now);
-                myradar.segments[type].value = v[type];
-                myradar.update();
+				myradar.segments[type].value = v[type];
+				myradar.update();
 			}
 
 			function fakeLivePaymentAnimate() {
@@ -132,20 +135,24 @@
 					circleAnimation(i);
 				}
 			}
-            function RealLivePayment() {
-                var type = {{ data["type"] }};
-                var money = {{ data["money"] }};
-                var account = {{ data["account"] }};
-                var p = {{ data["position"] }};
+
+			function RealLivePayment() {
+				var type = {
+				};
+				var money = {
+				};
+				var account = {
+				};
+				var p = {
+				};
 				var d = Date();
 				var now = d.toLocaleString();
 				var data = "類別:" + productTypes[type] + "\n" + "金額:" + money + "\n" + "帳號:" + account;
 				var c = createCircle(p, colors[type], data);
-                v[type] = v[type] + money;
+				v[type] = v[type] + money;
 				addPaymentItem(productTypes[type], money, account, now);
-                myradar.segments[type].value = v[type];
-                myradar.update();
 			}
+
 			function RealLivePaymentAnimate() {
 				for (var i = 0; i < circles.length; i++) {
 					circleAnimation(i);
@@ -154,55 +161,20 @@
 			//setInterval("fakeLivePayment()", 500);
 			//setInterval("fakeLivePaymentAnimate()", 10);
 
+			var ws = new ReconnectingWebSocket("ws://140.113.178.132:1078/api/ws/");
+			ws.onopen = function () {
+                console.log("get connection");
+            };
+			ws.onmessage = function(e) {
+					var data = JSON.parse(e.data);
+					console.log(data);
+					var lat=data['latitude'];
+					var lng=data['longitude'];
+					var msg = data['account_name']+'->'+data['to_user_id'] + "\n" + data['price']+' '+data['currency'] + "\n" + "位置:" + data['created_at'];
+					var c = createCircle(L.latLng(lat, lng), "#0092C7", msg);
+					addPaymentItem(data['account_name']+'->'+data['to_user_id'], data['name'], data['price']+' '+data['currency'], data['account_id'], data['created_at']);
+				}
 
-
-        var data = [
-            {
-                value: v[0],
-                color:"#F7464A",
-                highlight: "#FF5A5E",
-                label: "食"
-            },
-            {
-                value: v[1],
-                color: "#46BFBD",
-                highlight: "#5AD3D1",
-                label: "衣"
-            },
-            {
-                value: v[2],
-                color: "#FDB45C",
-                highlight: "#FFC870",
-                label: "住"
-            },
-            {
-                value: v[3],
-                color: "#949FB1",
-                highlight: "#A8B3C5",
-                label: "行"
-            },
-            {
-                value: v[4],
-                color: "#F4F3DE",
-                highlight: "#116774",
-                label: "育"
-            },
-            {
-                value: v[5],
-                color: "#0092C7",
-                highlight: "#613274",
-                label: "樂"
-            }
-        ];
-        var ctx = document.getElementById("radar").getContext("2d");
-        var myradar = new Chart(ctx).PolarArea(data, {
-            tooltipTemplate: "<%= label %>: <%= value %>",
-            onAnimationProgress: function(){
-                this.showTooltip(this.segments, true);
-            },
-            tooltipEvents: [],
-            showTooltips: true
-        });
 		</script>
 </body>
 
