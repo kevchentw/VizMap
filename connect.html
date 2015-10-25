@@ -40,12 +40,12 @@
         </div>
 		<script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
 		<script>
-		var v = new Array(30043,22050,31340,25340,23450,47650);
+		var v = new Array(0,0,0,0,0,0);
 
             productTypes = ['食','衣','住','行','育','樂'];
 			colors = ['#0092C7','#9FE0F6','#F3E59A','#F3B59B','#F29C9C','#7BA3A8','#F4F3DE','#BEAD92','#F35A4A'];
 			circles = [];
-			var map = L.map('map').setView([25.046074, 121.5494119], 15);
+			var map = L.map('map').setView([24.787045, 120.996726], 18);
 
 			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoia2V2Y2hlbnR3IiwiYSI6ImNpZzRrNnJjajJ2bml1a201ZTgxYnByYXkifQ.6Aj4446JZbArro776O5y9A', {
 				maxZoom: 20,
@@ -132,8 +132,27 @@
 					circleAnimation(i);
 				}
 			}
-			setInterval("fakeLivePayment()", 500);
-			setInterval("fakeLivePaymentAnimate()", 10);
+            function RealLivePayment() {
+                var type = {{ data["type"] }};
+                var money = {{ data["money"] }};
+                var account = {{ data["account"] }};
+                var p = {{ data["position"] }};
+				var d = Date();
+				var now = d.toLocaleString();
+				var data = "類別:" + productTypes[type] + "\n" + "金額:" + money + "\n" + "帳號:" + account;
+				var c = createCircle(p, colors[type], data);
+                v[type] = v[type] + money;
+				addPaymentItem(productTypes[type], money, account, now);
+                myradar.segments[type].value = v[type];
+                myradar.update();
+			}
+			function RealLivePaymentAnimate() {
+				for (var i = 0; i < circles.length; i++) {
+					circleAnimation(i);
+				}
+			}
+			//setInterval("fakeLivePayment()", 500);
+			//setInterval("fakeLivePaymentAnimate()", 10);
 
 
 
